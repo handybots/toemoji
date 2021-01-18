@@ -1,4 +1,4 @@
-long_poller: {}
+long_poller: { }
 
 strings:
   switch_pm_text: 'Перейти в чат с ботом'

@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	tb "github.com/demget/telebot"
+	tb "gopkg.in/tucnak/telebot.v3"
 )
 
 func (h Handler) OnUpdate(u *tb.Update) bool {
@@ -16,7 +16,7 @@ func (h Handler) OnUpdate(u *tb.Update) bool {
 		user = u.Message.Sender
 		data = u.Message.Text
 	case u.Query != nil:
-		user = &u.Query.From
+		user = u.Query.Sender
 		data = u.Query.Text
 	default:
 		return true

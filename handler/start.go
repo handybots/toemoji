@@ -1,18 +1,20 @@
 package handler
 
-import tb "github.com/demget/telebot"
+import tb "gopkg.in/tucnak/telebot.v3"
 
-func (h Handler) OnStart(m *tb.Message) {
-	h.b.Send(m.Sender,
-		h.b.Text("start"),
-		h.b.InlineMarkup("start"),
+func (h Handler) OnStart(context tb.Context) error {
+	h.b.Send(context.Message().Sender,
+		"start",
+		"start",
 		tb.NoPreview,
 		tb.ModeMarkdown)
+	return nil
 }
 
-func (h Handler) OnStartTranslate(c *tb.Callback) {
-	h.b.Edit(c.Message,
-		h.b.Text("start_ru"),
+func (h Handler) OnStartTranslate(context tb.Context) error {
+	h.b.Edit(context.Callback().Message,
+		"start",
 		tb.NoPreview,
 		tb.ModeMarkdown)
+	return nil
 }

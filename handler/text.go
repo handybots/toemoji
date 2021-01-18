@@ -3,15 +3,16 @@ package handler
 import (
 	"log"
 
-	tb "github.com/demget/telebot"
+	tb "gopkg.in/tucnak/telebot.v3"
 )
 
-func (h Handler) OnText(m *tb.Message) {
-	result, err := translateText(m.Text)
+func (h Handler) OnText(context tb.Context) error {
+	result, err := translateText(context.Text())
 	if err != nil {
 		log.Println(err)
-		return
+		return err
 	}
 
-	h.b.Reply(m, result)
+	h.b.Reply(context.Message(), result)
+	return nil
 }

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	tb "github.com/demget/telebot"
+	tb "gopkg.in/tucnak/telebot.v3"
 )
 
 type Handler struct {

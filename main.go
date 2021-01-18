@@ -1,27 +1,15 @@
 package main
 
 import (
+	"github.com/handybots/toemoji/handler"
+	tb "gopkg.in/tucnak/telebot.v3"
 	"log"
 	"os"
-
-	tb "github.com/demget/telebot"
-	"github.com/handybots/toemoji/handler"
 )
 
 func main() {
-	tmplEngine := &tb.TemplateText{
-		Dir:        "data",
-		DelimLeft:  "${",
-		DelimRight: "}",
-	}
 
-	pref, err := tb.NewSettingsYAML("bot.yaml", tmplEngine)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	pref.Token = os.Getenv("TOKEN")
-
-	b, err := tb.NewBot(pref)
+	b, err := tb.NewBot(tb.Settings{Token: os.Getenv("TOKEN"), Poller: &tb.LongPoller{Timeout: 10}})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -31,7 +19,7 @@ func main() {
 	})
 
 	b.Handle("/start", h.OnStart)
-	b.Handle(b.InlineButton("start_translate"), h.OnStartTranslate)
+	//b.Handle(, h.OnStartTranslate)
 
 	b.Handle(tb.OnText, h.OnText)
 	b.Handle(tb.OnQuery, h.OnQuery)
