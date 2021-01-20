@@ -14,6 +14,8 @@ func (h handler) LoggerFields(c tele.Context) logrus.Fields {
 		f["event"] = "callback"
 	case c.Message() != nil:
 		f["event"] = "message"
+	case c.Query() != nil:
+		f["event"] = "query"
 	}
 
 	if user := c.Sender(); user != nil {
