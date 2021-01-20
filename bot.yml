@@ -1,0 +1,26 @@
+settings:
+  token_env: TOKEN
+  parse_mode: markdown
+
+config:
+  switch_pm_text: 'Перейти в чат с ботом'
+  switch_pm_param: 'inline'
+
+buttons:
+  start_translate:
+    unique: start_translate
+    text: 'Перевести 🧐'
+
+  switch_inline:
+    text: 'Поделиться с друзьями'
+    switch_inline_query: 'привет'
+  switch_inline_chat:
+    text: 'Перевести текст'
+    switch_inline_query_current_chat: 'привет'
+
+markups:
+  start:
+    - - start_translate
+  switch_inline:
+    - - switch_inline_chat
+    - - switch_inline

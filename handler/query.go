@@ -1,51 +1,41 @@
 package handler
 
 import (
-	"log"
-	"strconv"
-
-	tb "gopkg.in/tucnak/telebot.v3"
+	tele "gopkg.in/tucnak/telebot.v3"
 )
 
-func (h Handler) OnQuery(context tb.Context) error {
-	var rs tb.Results
-
-	if context.Query().Text != "" {
-		result, err := translateText(context.Query().Text)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
-		view := struct {
-			Text   string
-			Result string
-		}{
-			Text:   context.Query().Text,
-			Result: result,
-		}
-
-		r := &tb.ArticleResult{
-			Title:       view.Text,
-			Description: view.Result,
-			Text:        view.Text + "\n" + view.Result,
-		}
-		r.SetResultID(strconv.Itoa(1))
-
-		rs = append(rs, r)
+func (h handler) OnQuery(c tele.Context) error {
+	text := c.Data()
+	if text == "" {
+		text = "привет"
 	}
 
-	err := h.b.Answer(context.Query(), &tb.QueryResponse{
-		Results:           rs,
-		SwitchPMText:      "Перейти в чат с ботом",
-		SwitchPMParameter: "inline",
-		CacheTime:         1000,
-	})
+	result, err := translateText(text)
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
-	return nil
+	view := struct {
+		Text   string
+		Result string
+	}{
+		Text:   text,
+		Result: result,
+	}
 
+	r := &tele.ArticleResult{
+		Title:       view.Text,
+		Description: view.Result,
+	}
+	r.SetContent(&tele.InputTextMessageContent{
+		Text:      h.lt.Text(c, "result", view),
+		ParseMode: tele.ModeMarkdown,
+	})
+
+	return c.Answer(&tele.QueryResponse{
+		Results:           tele.Results{r},
+		SwitchPMText:      h.lt.String("switch_pm_text"),
+		SwitchPMParameter: h.lt.String("switch_pm_param"),
+		CacheTime:         1000,
+	})
 }

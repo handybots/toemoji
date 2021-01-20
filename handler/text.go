@@ -1,18 +1,20 @@
 package handler
 
 import (
-	"log"
+	"strings"
 
-	tb "gopkg.in/tucnak/telebot.v3"
+	tele "gopkg.in/tucnak/telebot.v3"
 )
 
-func (h Handler) OnText(context tb.Context) error {
-	result, err := translateText(context.Text())
+func (h handler) OnText(c tele.Context) error {
+	if strings.Contains(c.Text(), "\n") {
+		return nil
+	}
+
+	result, err := translateText(c.Text())
 	if err != nil {
-		log.Println(err)
 		return err
 	}
 
-	h.b.Reply(context.Message(), result)
-	return nil
+	return c.Reply(result)
 }

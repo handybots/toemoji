@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/handybots/toemoji/translate"
+
 	"go.uber.org/atomic"
 )
 
@@ -16,7 +17,7 @@ var currentSID atomic.String
 func init() {
 	data, err := ioutil.ReadFile("sid.txt")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	go func() {
@@ -29,6 +30,7 @@ func init() {
 			if err != nil {
 				log.Fatal(err)
 			}
+
 			currentSID.Store(sid)
 			time.Sleep(24 * time.Hour)
 		}

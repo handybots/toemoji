@@ -1,29 +1,35 @@
 package main
 
 import (
-	"github.com/handybots/toemoji/handler"
-	tb "gopkg.in/tucnak/telebot.v3"
 	"log"
-	"os"
+
+	"github.com/handybots/toemoji/handler"
+
+	tele "gopkg.in/tucnak/telebot.v3"
+	"gopkg.in/tucnak/telebot.v3/layout"
 )
 
 func main() {
-
-	b, err := tb.NewBot(tb.Settings{Token: os.Getenv("TOKEN"), Poller: &tb.LongPoller{Timeout: 10}})
+	lt, err := layout.New("bot.yml")
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
-	h := handler.New(handler.Config{
-		Bot: b,
+	b, err := tele.NewBot(lt.Settings())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	h := handler.New(handler.Handler{
+		Layout: lt,
+		Bot:    b,
 	})
 
+	b.Use(lt.Middleware("ru"))
 	b.Handle("/start", h.OnStart)
-	//b.Handle(, h.OnStartTranslate)
+	b.Handle(lt.Callback("start_translate"), h.OnStartTranslate)
+	b.Handle(tele.OnText, h.OnText)
+	b.Handle(tele.OnQuery, h.OnQuery)
 
-	b.Handle(tb.OnText, h.OnText)
-	b.Handle(tb.OnQuery, h.OnQuery)
-
-	b.Poller = tb.NewMiddlewarePoller(b.Poller, h.OnUpdate)
 	b.Start()
 }
