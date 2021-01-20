@@ -36,12 +36,12 @@ func main() {
 
 	ch, err := clickrus.NewHook(clickHouseConfig)
 	if err != nil {
-		// log.Fatal(err)
+		log.Fatal(err)
 	}
 
 	logger := logrus.New()
 	logger.SetOutput(os.Stdout)
-	_ = ch // logger.AddHook(ch)
+	logger.AddHook(ch)
 
 	h := handler.New(handler.Handler{
 		Layout: lt,
