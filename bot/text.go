@@ -1,4 +1,4 @@
-package handler
+package bot
 
 import (
 	"strings"
@@ -6,7 +6,7 @@ import (
 	tele "gopkg.in/tucnak/telebot.v3"
 )
 
-func (h handler) OnText(c tele.Context) error {
+func (b Bot) onText(c tele.Context) error {
 	if strings.Contains(c.Text(), "\n") {
 		return nil
 	}

@@ -1,10 +1,11 @@
-package storage
+package database
 
 import (
 	"unicode"
 
 	"github.com/fatih/structs"
 	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/jmoiron/sqlx/reflectx"
 )

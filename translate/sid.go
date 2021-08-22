@@ -1,22 +1,46 @@
 package translate
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
+
+	"go.uber.org/atomic"
 )
 
-var (
-	ErrNoSID = errors.New("translate: no sid found")
-)
 var (
 	reSID = regexp.MustCompile(`SID: *'([^']+)'`)
 )
 
-func ParseSID() (string, error) {
+var currentSID atomic.String
+
+func WatchSID(d time.Duration) {
+	data, err := ioutil.ReadFile("sid.txt")
+	if err != nil {
+		log.Println(err)
+	}
+
+	if data != nil {
+		currentSID.Store(string(data))
+		time.Sleep(d)
+	}
+
+	for {
+		sid, err := parseSID()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		currentSID.Store(sid)
+		time.Sleep(d)
+	}
+}
+
+func parseSID() (string, error) {
 	req, err := http.NewRequest(http.MethodGet, urlMain, nil)
 	if err != nil {
 		return "", err

@@ -2,6 +2,7 @@ package translate
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,11 +11,13 @@ import (
 )
 
 const (
-	urlMain         = "https://translate.yandex.com"
-	urlApiBase      = "https://translate.yandex.net/api"
-	urlApiTranslate = urlApiBase + "/v1/tr.json/translate?"
-
+	urlMain   = "https://translate.yandex.com"
+	urlApi    = "https://translate.yandex.net/api/v1/tr.json/translate?"
 	userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
+)
+
+var (
+	ErrNoSID = errors.New("translate: no sid found")
 )
 
 var defaultParams = url.Values{
@@ -31,9 +34,9 @@ type Result struct {
 	Text    []string `json:"text"`
 }
 
-func Translate(sid, text string) (Result, error) {
+func Translate(text string) (Result, error) {
 	params := url.Values{}
-	params.Set("id", sid)
+	params.Set("id", currentSID.Load())
 	for k, v := range defaultParams {
 		params[k] = v
 	}
@@ -42,7 +45,7 @@ func Translate(sid, text string) (Result, error) {
 	form.Set("text", text)
 	form.Set("option", "4")
 
-	endp := urlApiTranslate + params.Encode()
+	endp := urlApi + params.Encode()
 	body := strings.NewReader(form.Encode())
 
 	req, err := http.NewRequest(http.MethodPost, endp, body)
@@ -58,6 +61,7 @@ func Translate(sid, text string) (Result, error) {
 		return Result{}, err
 	}
 	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		return Result{}, fmt.Errorf("translate: response code is %d", resp.StatusCode)
 	}

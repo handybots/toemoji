@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o toemoji
+RUN go build -o toemoji ./cmd/bot
 
 FROM alpine
 

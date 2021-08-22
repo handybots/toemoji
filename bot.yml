@@ -5,6 +5,7 @@ settings:
 config:
   switch_pm_text: 'Перейти в чат с ботом'
   switch_pm_param: 'inline'
+  translate_d: 24h
 
 buttons:
   start_translate:
@@ -24,3 +25,10 @@ markups:
   switch_inline:
     - - switch_inline_chat
     - - switch_inline
+
+results:
+  tr:
+    type: article
+    title: '{{ .Text }}'
+    description: '{{ .Description }}'
+    message_text: '{{ text `result` . | jq }}'
