@@ -3,11 +3,12 @@ package bot
 import (
 	"strings"
 
+	"go.massbots.xyz/telebot/monitor"
+	
 	"github.com/handybots/toemoji"
 	"github.com/handybots/toemoji/database"
 	"github.com/handybots/toemoji/translate"
 
-	"go.massbots.xyz/telebot/monitor"
 	tele "gopkg.in/tucnak/telebot.v3"
 	"gopkg.in/tucnak/telebot.v3/layout"
 	"gopkg.in/tucnak/telebot.v3/middleware"
@@ -48,6 +49,8 @@ func (b *Bot) Start() {
 	b.Handle(b.Callback("start_translate"), b.onStartTranslate)
 	b.Handle(tele.OnText, b.onText)
 	b.Handle(tele.OnQuery, b.onQuery)
+	
+	b.Bot.Start()
 }
 
 func translateText(text string) (string, error) {
